@@ -1,26 +1,39 @@
 let codePostal = document.getElementById('CP')
 codePostal.addEventListener('input', () => {
-    let CPSaisi = codePostal.value
-    if (CPSaisi.length === 5) {
-        console.log('valeur:', CPSaisi)
-        console.table(apiCommunes(CPSaisi))
-    }
+  let CPSaisi = codePostal.value
+  if (CPSaisi.length === 5) {
+    console.log('valeur:', CPSaisi)
+    console.table(apiCommunes(CPSaisi))
+  }
 })
 
 async function apiCommunes(CP) {
-   
-    try {
-        const response = await fetch(
-          `https://geo.api.gouv.fr/communes?codePostal=${CP}`
-        );
-        const data = await response.json();
-        console.table(data);
-        return data;
-      } catch (error) {
-        console.error("Erreur lors de la requête API:", error);
-        throw error;
-      }
-    }
+
+  try {
+    const response = await fetch(
+      `https://geo.api.gouv.fr/communes?codePostal=${CP}`
+    );
+    const data = await response.json();
+    console.table(data);
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la requête API:", error);
+    throw error;
+  }
+}
+
+// if (^[0-9]{5}$.test(CP)) {
+//   try {
+//     // const data = await apiCommunes(CP);
+//     // displayCommunes(data);
+//   } catch (error) {
+//     console.error(
+//       "Une erreur est survenue lors de la recherche de la commune :",
+//       error
+//     );
+//     throw error;
+//   }
+// }
 
     // function displayCommunes(data) {
     //     communeSelect.innerHTML = "";
@@ -55,4 +68,5 @@ async function apiCommunes(CP) {
 //     // - Afficher un message de validation à l'utilisateur
 //   }
 // });
+
 
