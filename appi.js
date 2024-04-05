@@ -56,5 +56,3 @@ async function apiCommunes(CP) {
 //   }
 // });
 
-
-.length === 5
