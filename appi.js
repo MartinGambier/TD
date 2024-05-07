@@ -1,72 +1,66 @@
-let codePostal = document.getElementById('CP')
-codePostal.addEventListener('input', () => {
-  let CPSaisi = codePostal.value
-  if (CPSaisi.length === 5) {
-    console.log('valeur:', CPSaisi)
-    console.table(apiCommunes(CPSaisi))
-  }
-})
+document.getElementById('weatherForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const commune = document.getElementById('CodePostal').value;
+    const ville = document.getElementById('commune').value;
 
-async function apiCommunes(CP) {
+    fetch(`https://geo.api.gouv.fr/communes?codePostal=${commune}&fields=nom`)
+        .then(response => response.json())
+        .then(data => {
+            const nVille = data[0].nom;
+            ville.value = nVille;
 
-  try {
-    const response = await fetch(
-      `https://geo.api.gouv.fr/communes?codePostal=${CP}`
-    );
-    const data = await response.json();
-    console.table(data);
-    return data;
-  } catch (error) {
-    console.error("Erreur lors de la requête API:", error);
-    throw error;
-  }
+            fetch(`https://api.meteo-concept.com/api/forecast/daily?token=287301e37ba9d41b8bab3e01cb24d33740f413426375e19463a804ddbebcf410&insee=${commune}`)
+                .then(response => response.json())
+                .then(data => {
+                    const forecast = data.forecast[0];
+                    const minTemp = forecast.tmin;
+                    const maxTemp = forecast.tmax;
+                    const Probabilitédepluie = forecast.rr10;
+                    const leverdesoleil = forecast.sun_hours;
+
+                    const weatherInfo = `
+                        <p>Température minimale : ${minTemp} °C</p>
+                        <p>Température maximale : ${maxTemp} °C</p>
+                        <p>Probabilité de pluie : ${Probabilitédepluie}%</p>
+                        <p>Nombre d'heures d'ensoleillement : ${leverdesoleil} heures</p>
+                    `;
+                    document.getElementById('weatherInfo').innerHTML = weatherInfo;
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des données météorologiques :', error);
+                    document.getElementById('weatherInfo').innerHTML = '<p>Erreur lors de la récupération des données météorologiques. Veuillez réessayer.</p>';
+                });
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération de la commune :', error);
+            document.getElementById('weatherInfo').innerHTML = '<p>Erreur lors de la récupération de la commune. Veuillez vérifier le code postal.</p>';
+        });
+});
+
+
+function loadCommunes(codePostal) {
+    fetch(`https://geo.api.gouv.fr/communes?codePostal=${codePostal}&fields=nom`)
+        .then(response => response.json())
+        .then(data => {
+            const communeSelect = document.getElementById('commune');
+            communeSelect.innerHTML = '<option value="">Sélectionnez une commune</option>';
+            data.forEach(commune => {
+                const option = document.createElement('option');
+                option.value = commune.nom;
+                option.textContent = commune.nom;
+                communeSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Erreur lors du chargement des communes :', error));
 }
 
-// if (^[0-9]{5}$.test(CP)) {
-//   try {
-//     // const data = await apiCommunes(CP);
-//     // displayCommunes(data);
-//   } catch (error) {
-//     console.error(
-//       "Une erreur est survenue lors de la recherche de la commune :",
-//       error
-//     );
-//     throw error;
-//   }
-// }
 
-    // function displayCommunes(data) {
-    //     communeSelect.innerHTML = "";
-    //     if (data.length === 1) {
-    //       const commune = data[0];
-    //       communeSelect.innerHTML = `<option value="${commune.code}">${commune.nom}</option>`;
-    //     } else if (data.length > 1) {
-    //       data.forEach((commune) => {
-    //         const option = document.createElement("option");
-    //         option.value = commune.code;
-    //         option.textContent = commune.nom;
-    //         communeSelect.appendChild(option);
-    //       });
-    //     }
-    //     communeSelect.style.display = "block";
-    //     validationButton.style.display = "block";
-    // }
-
-
-
-// const codePostal = document.getElementById('CP');
-
-// codePostal.addEventListener('input', () => {
-//   const enteredCodePostal = codePostal.value
-
-//   if (enteredCodePostal.length === 5) {
-//     // Code à exécuter lorsque le code postal a 5 chiffres
-//     console.log('Valeur :', enteredCodePostal);
-
-//     // Vous pouvez effectuer d'autres actions ici, par exemple :
-//     // - Appeler une API pour récupérer des données liées au code postal
-//     // - Afficher un message de validation à l'utilisateur
-//   }
-// });
+document.getElementById('CodePostal').addEventListener('input', function() {
+    const codePostal = this.value;
+    if (codePostal.length === 5) {
+        loadCommunes(codePostal);
+    }
+});
 
 
