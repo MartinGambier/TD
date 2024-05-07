@@ -10,7 +10,9 @@ document.getElementById('weatherForm').addEventListener('submit', function(event
             const nVille = data[0].nom;
             ville.value = nVille;
 
-            fetch(`https://api.meteo-concept.com/api/forecast/daily?token=287301e37ba9d41b8bab3e01cb24d33740f413426375e19463a804ddbebcf410&insee=${commune}`)
+           let code_insee = document.getElementById('commune').value
+           console.log(code_insee)
+            fetch(`https://api.meteo-concept.com/api/forecast/daily?token=287301e37ba9d41b8bab3e01cb24d33740f413426375e19463a804ddbebcf410&insee=${code_insee}`)
                 .then(response => response.json())
                 .then(data => {
                     const forecast = data.forecast[0];
@@ -47,7 +49,7 @@ function loadCommunes(codePostal) {
             communeSelect.innerHTML = '<option value="">Sélectionnez une commune</option>';
             data.forEach(commune => {
                 const option = document.createElement('option');
-                option.value = commune.nom;
+                option.value = commune.code;
                 option.textContent = commune.nom;
                 communeSelect.appendChild(option);
             });
