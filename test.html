@@ -1,16 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Météo</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <p>fgijesdfg</p>
-    <form action="">
-        <label for="CP">Code Postal :</label>
-        <input type="text" id="CP" name="CP" value="2" placeholder="Saisissez votre code postal">
-    </form>
-    <script src="appi.js"></script>
+    <div class="container">
+        <h1>Météo</h1>
+        <form id="weatherForm">
+            <label for="CodePostal">Code postal :</label>
+            <input type="text" id="CodePostal" name="CodePostal" required>
+            <label for="commune">Commune :</label>
+            <select id="commune" name="commune">
+                <option value="">Sélectionnez une commune</option>
+            </select>
+            <button type="submit">Afficher la météo</button>
+        </form>
+        <div id="weatherInfo"></div>
+    </div>
+    <script src="meteo.js"></script>
 </body>
 </html>
